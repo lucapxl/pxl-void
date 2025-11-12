@@ -2,4 +2,4 @@
 
 ## install minimal void
 
-run `sudo .\install.sh` from this repository in the freshly installed Void
+run `sudo bash install.sh` from this repository in the freshly installed Void
