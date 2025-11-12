@@ -14,7 +14,7 @@ TOOLSDIR=$(echo "$USERDIR/_tools")
 ######################
 PACKAGES="firefox thefuck tldr blueman bash-completion vim foot fastfetch" # basic tools
 PACKAGES=" $PACKAGES labwc wlroots xorg-server-xwayland"                  # labwc and Xwayland related
-PACKAGES=" $PACKAGES Waybar swaylock wlogout wlopm chayang sfwbar"        # main tools (bar, lock screen, logout menu, brightness manager, wallpaper manager))
+PACKAGES=" $PACKAGES Waybar swaylock wlogout wlopm chayang"               # main tools (bar, lock screen, logout menu, brightness manager, wallpaper manager))
 PACKAGES=" $PACKAGES gnome-keyring dbus elogind"                          # keychain for KeePassXC, SSH keys and nextcloud
 PACKAGES=" $PACKAGES fuzzel"                                              # Menu for labwc
 PACKAGES=" $PACKAGES wdisplays kanshi"                                    # Graphical monitor manager and profile manager
@@ -24,13 +24,12 @@ PACKAGES=" $PACKAGES playerctl"                                           # Play
 PACKAGES=" $PACKAGES pavucontrol pulseaudio"                              # audio devices manager
 PACKAGES=" $PACKAGES NetworkManager"                                      # network manager
 PACKAGES=" $PACKAGES grim slurp swaybg"                                   # screenshot and region selection tools
-PACKAGES=" $PACKAGES material-design-dark"                                # icon package
+#PACKAGES=" $PACKAGES material-design-dark"                                # icon package
 PACKAGES=" $PACKAGES tuigreet greetd"                                     # login manager
 PACKAGES=" $PACKAGES mesa-dri mesa-intel-dri"                             # login manager
 PACKAGES=" $PACKAGES foot foot-terminfo nautilus flatpak galculator tar"  # terminal, file manager, flatpak caltulator and tar
 PACKAGES=" $PACKAGES nextcloud-client"                                    # nextcloud and file manager plugin
 PACKAGES=" $PACKAGES adwaita-fonts freefont-ttf font-inter font-awesome font-awesome5 font-awesome6" # fonts
-PACKAGES=" $PACKAGES pam-devel libX11-devel gcc appstream-data python-devel dmidecode make" # prerequisites for installation of packages later
 
 ######################
 # Making sure the user running has root privileges
@@ -49,13 +48,18 @@ fi
 # Output function
 ######################
 function logMe {
-    echo ""
-    echo "============================================================"
-    echo "===" $1
-    echo "============================================================"
-    echo ""
+    echo "=== [INFO] " $1
     sleep 3
 }
+
+######################
+# Output function
+######################
+function logError {
+    echo "=== [ERROR] " $1
+    sleep 3
+}
+
 
 ######################
 # creating necessary folders
@@ -73,6 +77,12 @@ logMe "Adding xbps-* bash aliases"
 grep -qi "alias xi=.*" $USERDIR/.bashrc || echo "alias xi='sudo xbps-install -S'" >> $USERDIR/.bashrc
 grep -qi "alias xu=.*" $USERDIR/.bashrc || echo "alias xu='sudo xbps-install -Su'" >> $USERDIR/.bashrc
 grep -qi "alias xs=.*" $USERDIR/.bashrc || echo "alias xs='sudo xbps-query -Rs'" >> $USERDIR/.bashrc
+
+######################
+# setting variables
+######################
+logMe "Setting variables"
+echo "XDG_RUNTIME_DIR=/run/user/$(id -u)" >> $USERDIR/.pam_environment
 
 ######################
 # Disabling wpa_supplicant and dhcpd services
@@ -140,4 +150,3 @@ chown -R $SUDO_USER:$SUDO_USER $USERDIR
 ######################
 logMe "[DONE] Installation completed! please reboot your system"
 read -p ""
-reboot
