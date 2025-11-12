@@ -85,20 +85,6 @@ logMe "Setting variables"
 echo "XDG_RUNTIME_DIR=/run/user/$(id -u)" >> $USERDIR/.pam_environment
 
 ######################
-# Disabling wpa_supplicant and dhcpd services
-######################
-logMe "Disabling wpa_supplicant and dhcpd services"
-sudo rm -rf /var/service/wpa_supplicant
-sudo rm -rf /var/service/dhcpd
-
-######################
-# enabling NetworkManager and dbus services
-######################
-logMe "Enabling NetworkManager and dbus services"
-sudo ln -s /etc/sv/dbus /var/service/
-sudo ln -s /etc/sv/NetworkManager /var/service/
-
-######################
 # Updating current system
 ######################
 logMe "Updating current system"
@@ -124,8 +110,22 @@ flatpak install flathub org.xfce.mousepad -y
 ######################
 # enabling greetk at start and switching target to graphical
 ######################
-logMe "Setting greetd/tuigreet as default login manager"
+logMe "Configuring greetd/tuigreet login manager"
 sed -i 's/^command.*/command = "tuigreet --cmd labwc"/' /etc/greetd/config.toml
+
+######################
+# Disabling wpa_supplicant and dhcpd services
+######################
+logMe "Disabling wpa_supplicant and dhcpd services"
+sudo rm -rf /var/service/wpa_supplicant
+sudo rm -rf /var/service/dhcpd
+
+######################
+# enabling Greetd, NetworkManager and dbus services
+######################
+logMe "Enabling NetworkManager and dbus services"
+sudo ln -s /etc/sv/dbus /var/service/
+sudo ln -s /etc/sv/NetworkManager /var/service/
 sudo ln -s /etc/sv/greetd /var/service/
 
 ######################
