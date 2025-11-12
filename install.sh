@@ -15,7 +15,7 @@ TOOLSDIR=$(echo "$USERDIR/_tools")
 PACKAGES="firefox thefuck tldr blueman bash-completion vim foot fastfetch" # basic tools
 PACKAGES=" $PACKAGES labwc wlroots xorg-server-xwayland"                  # labwc and Xwayland related
 PACKAGES=" $PACKAGES Waybar swaylock wlogout wlopm chayang"               # main tools (bar, lock screen, logout menu, brightness manager, wallpaper manager))
-PACKAGES=" $PACKAGES gnome-keyring dbus elogind polkit-elogind"           # keychain for KeePassXC, SSH keys and nextcloud
+PACKAGES=" $PACKAGES dbus elogind polkit-elogind gvfs"                    # keychain for KeePassXC, SSH keys and nextcloud
 PACKAGES=" $PACKAGES fuzzel"                                              # Menu for labwc
 PACKAGES=" $PACKAGES wdisplays kanshi"                                    # Graphical monitor manager and profile manager
 PACKAGES=" $PACKAGES dunst"                                               # Graphical Notification manager
@@ -24,10 +24,10 @@ PACKAGES=" $PACKAGES playerctl"                                           # Play
 PACKAGES=" $PACKAGES pavucontrol pulseaudio"                              # audio devices manager
 PACKAGES=" $PACKAGES NetworkManager"                                      # network manager
 PACKAGES=" $PACKAGES grim slurp swaybg"                                   # screenshot and region selection tools
-PACKAGES=" $PACKAGES adwaita-icon-theme"                                # icon package
+PACKAGES=" $PACKAGES adwaita-icon-theme"                                  # icon package
 PACKAGES=" $PACKAGES tuigreet greetd"                                     # login manager
 PACKAGES=" $PACKAGES mesa-dri mesa-intel-dri intel-video-accel"           # login manager
-PACKAGES=" $PACKAGES foot foot-terminfo nautilus galculator tar"          # terminal, file manager, flatpak caltulator and tar
+PACKAGES=" $PACKAGES foot foot-terminfo pcmanfm galculator tar"           # terminal, file manager, flatpak caltulator and tar
 PACKAGES=" $PACKAGES flatpak xdg-desktop-portal-gtk"                                    # nextcloud and file manager plugin
 PACKAGES=" $PACKAGES nextcloud-client"                                    # nextcloud and file manager plugin
 PACKAGES=" $PACKAGES adwaita-fonts nerd-fonts freefont-ttf font-inter font-awesome font-awesome5 font-awesome6" # fonts
@@ -133,6 +133,28 @@ logMe "Configuring greetd/tuigreet login manager"
 sed -i 's/^command.*/command = "tuigreet --cmd \x27dbus-run-session labwc\x27"/' /etc/greetd/config.toml
 
 ######################
+# adding user to correct groups
+######################
+logMe "Adding user to correct groups"
+sudo usermod -aG storage $SUDO_USER
+sudo usermod -aG network $SUDO_USER
+sudo usermod -aG input $SUDO_USER
+
+######################
+# enabling automount of usb drives
+######################
+logMe "enabling automount of usb drives"
+sudo cat >/etc/polkit-1/rules.d/50-udisks.rules <<EOL
+polkit.addRule(function(action, subject) {
+    if (subject.isInGroup("wheel")) {
+        if (action.id.startsWith("org.freedesktop.udisks2.")) {
+            return polkit.Result.YES;
+        }
+    }
+});
+EOL
+
+######################
 # Disabling wpa_supplicant and dhcpd services
 ######################
 logMe "Disabling wpa_supplicant and dhcpd services"
@@ -150,14 +172,6 @@ sudo ln -s /etc/sv/greetd /var/service/
 sudo ln -s /etc/sv/chronyd /var/service/
 sudo ln -s /etc/sv/tlp /var/service/
 sudo ln -s /etc/sv/polkitd /var/service/
-
-######################
-# adding user to correct groups
-######################
-logMe "Adding user to correct groups"
-sudo usermod -aG storage $SUDO_USER
-sudo usermod -aG network $SUDO_USER
-sudo usermod -aG input $SUDO_USER
 
 ######################
 # all done, rebooting
