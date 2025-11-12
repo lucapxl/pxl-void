@@ -135,7 +135,7 @@ sed -i 's/^command.*/command = "tuigreet --cmd labwc"/' /etc/greetd/config.toml
 ######################
 logMe "Disabling wpa_supplicant and dhcpd services"
 sudo rm -rf /var/service/wpa_supplicant
-sudo rm -rf /var/service/dhcpd
+sudo rm -rf /var/service/dhcpcd
 
 ######################
 # enabling Greetd, NetworkManager and dbus services
