@@ -24,12 +24,14 @@ PACKAGES=" $PACKAGES playerctl"                                           # Play
 PACKAGES=" $PACKAGES pavucontrol pulseaudio"                              # audio devices manager
 PACKAGES=" $PACKAGES NetworkManager"                                      # network manager
 PACKAGES=" $PACKAGES grim slurp swaybg"                                   # screenshot and region selection tools
-#PACKAGES=" $PACKAGES material-design-dark"                                # icon package
+PACKAGES=" $PACKAGES adwaita-icon-theme"                                # icon package
 PACKAGES=" $PACKAGES tuigreet greetd"                                     # login manager
-PACKAGES=" $PACKAGES mesa-dri mesa-intel-dri"                             # login manager
-PACKAGES=" $PACKAGES foot foot-terminfo nautilus flatpak galculator tar"  # terminal, file manager, flatpak caltulator and tar
+PACKAGES=" $PACKAGES mesa-dri mesa-intel-dri intel-video-accel"           # login manager
+PACKAGES=" $PACKAGES foot foot-terminfo nautilus galculator tar"          # terminal, file manager, flatpak caltulator and tar
+PACKAGES=" $PACKAGES flatpak xdg-desktop-portal-gtk"                                    # nextcloud and file manager plugin
 PACKAGES=" $PACKAGES nextcloud-client"                                    # nextcloud and file manager plugin
-PACKAGES=" $PACKAGES adwaita-fonts freefont-ttf font-inter font-awesome font-awesome5 font-awesome6" # fonts
+PACKAGES=" $PACKAGES adwaita-fonts nerd-fonts freefont-ttf font-inter font-awesome font-awesome5 font-awesome6" # fonts
+PACKAGES=" $PACKAGES void-repo-nonfree btop ncdu intel-ucode chrony tlp"  # other tweaks
 
 ######################
 # Making sure the user running has root privileges
@@ -128,7 +130,7 @@ chown -R $SUDO_USER:$SUDO_USER $USERDIR
 # enabling greetd at start and switching target to graphical
 ######################
 logMe "Configuring greetd/tuigreet login manager"
-sed -i 's/^command.*/command = "tuigreet --cmd labwc"/' /etc/greetd/config.toml
+sed -i 's/^command.*/command = "tuigreet --cmd \x27dbus-run-session labwc\x27"/' /etc/greetd/config.toml
 
 ######################
 # Disabling wpa_supplicant and dhcpd services
@@ -136,6 +138,7 @@ sed -i 's/^command.*/command = "tuigreet --cmd labwc"/' /etc/greetd/config.toml
 logMe "Disabling wpa_supplicant and dhcpd services"
 sudo rm -rf /var/service/wpa_supplicant
 sudo rm -rf /var/service/dhcpcd
+sudo rm -rf /var/service/acpid
 
 ######################
 # enabling Greetd, NetworkManager and dbus services
@@ -144,6 +147,17 @@ logMe "Enabling NetworkManager and dbus services"
 sudo ln -s /etc/sv/dbus /var/service/
 sudo ln -s /etc/sv/NetworkManager /var/service/
 sudo ln -s /etc/sv/greetd /var/service/
+sudo ln -s /etc/sv/chronyd /var/service/
+sudo ln -s /etc/sv/tlp /var/service/
+sudo ln -s /etc/sv/polkitd /var/service/
+
+######################
+# adding user to correct groups
+######################
+logMe "Adding user to correct groups"
+sudo usermod -aG storage $SUDO_USER
+sudo usermod -aG network $SUDO_USER
+sudo usermod -aG input $SUDO_USER
 
 ######################
 # all done, rebooting
