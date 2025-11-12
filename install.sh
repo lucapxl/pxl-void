@@ -92,7 +92,7 @@ sudo ln -s /etc/sv/NetworkManager /var/service/
 # Updating current system
 ######################
 logMe "Updating current system"
-sudo xbps-install -Suy $PACKAGES
+sudo xbps-install -Suy
 
 ######################
 # Installing necessary packages
