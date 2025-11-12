@@ -108,7 +108,24 @@ flatpak install flathub com.visualstudio.code -y
 flatpak install flathub org.xfce.mousepad -y
 
 ######################
-# enabling greetk at start and switching target to graphical
+# Download and apply config files
+######################
+logMe "applying config files"
+cd $TOOLSDIR
+git clone https://github.com/lucapxl/dotconfig.git
+cd dotconfig/files
+mkdir -p $USERDIR/.config/
+cp -R $TOOLSDIR/dotconfig/files/config/* $USERDIR/.config/
+mkdir -p $USERDIR/.themes/
+cp -R $TOOLSDIR/dotconfig/files/themes/* $USERDIR/.themes/
+
+######################
+# recursively fix ownership for .config directory
+######################
+chown -R $SUDO_USER:$SUDO_USER $USERDIR
+
+######################
+# enabling greetd at start and switching target to graphical
 ######################
 logMe "Configuring greetd/tuigreet login manager"
 sed -i 's/^command.*/command = "tuigreet --cmd labwc"/' /etc/greetd/config.toml
@@ -129,24 +146,7 @@ sudo ln -s /etc/sv/NetworkManager /var/service/
 sudo ln -s /etc/sv/greetd /var/service/
 
 ######################
-# Download and apply config files
-######################
-logMe "applying config files"
-cd $TOOLSDIR
-git clone https://github.com/lucapxl/dotconfig.git
-cd dotconfig/files
-mkdir -p $USERDIR/.config/
-cp -R $TOOLSDIR/dotconfig/files/config/* $USERDIR/.config/
-mkdir -p $USERDIR/.themes/
-cp -R $TOOLSDIR/dotconfig/files/themes/* $USERDIR/.themes/
-
-######################
-# recursively fix ownership for .config directory
-######################
-chown -R $SUDO_USER:$SUDO_USER $USERDIR
-
-######################
 # all done, rebooting
 ######################
-logMe "[DONE] Installation completed! please reboot your system"
+logMe "[DONE] Installation completed! remember to reconnect to your network with 'nmtui' please reboot your system"
 read -p ""
