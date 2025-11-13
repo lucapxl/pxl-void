@@ -27,9 +27,9 @@ PACKAGES=" $PACKAGES grim slurp swaybg"                                   # scre
 PACKAGES=" $PACKAGES adwaita-icon-theme"                                  # icon package
 PACKAGES=" $PACKAGES tuigreet greetd"                                     # login manager
 PACKAGES=" $PACKAGES mesa-dri mesa-intel-dri intel-video-accel"           # login manager
-PACKAGES=" $PACKAGES foot foot-terminfo pcmanfm nautilus galculator tar"           # terminal, file manager, flatpak caltulator and tar
-PACKAGES=" $PACKAGES flatpak xdg-desktop-portal-gtk"                                    # nextcloud and file manager plugin
-PACKAGES=" $PACKAGES nextcloud-client"                                    # nextcloud and file manager plugin
+PACKAGES=" $PACKAGES foot foot-terminfo pcmanfm nautilus galculator tar"  # terminal, file manager, flatpak caltulator and tar
+PACKAGES=" $PACKAGES flatpak xdg-desktop-portal-gtk"                      # nextcloud and file manager plugin
+PACKAGES=" $PACKAGES nextcloud-client tmux"                               # nextcloud and file manager plugin
 PACKAGES=" $PACKAGES adwaita-fonts nerd-fonts freefont-ttf font-inter font-awesome font-awesome5 font-awesome6" # fonts
 PACKAGES=" $PACKAGES intel-ucode btop ncdu chrony tlp"  # other tweaks
 
