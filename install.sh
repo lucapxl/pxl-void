@@ -12,10 +12,10 @@ TOOLSDIR=$(echo "$USERDIR/_tools")
 ######################
 # Packages
 ######################
-PACKAGES="firefox thefuck tldr blueman bash-completion vim foot fastfetch" # basic tools
+PACKAGES="firefox tldr blueman bash-completion vim foot fastfetch" # basic tools
 PACKAGES=" $PACKAGES labwc wlroots xorg-server-xwayland"                  # labwc and Xwayland related
 PACKAGES=" $PACKAGES Waybar swaylock wlogout wlopm chayang"               # main tools (bar, lock screen, logout menu, brightness manager, wallpaper manager))
-PACKAGES=" $PACKAGES dbus elogind polkit-elogind gvfs"                    # keychain for KeePassXC, SSH keys and nextcloud
+PACKAGES=" $PACKAGES dbus elogind polkit-elogind gvfs gnome-keyring"      # keychain for KeePassXC, SSH keys and nextcloud
 PACKAGES=" $PACKAGES fuzzel"                                              # Menu for labwc
 PACKAGES=" $PACKAGES wdisplays kanshi"                                    # Graphical monitor manager and profile manager
 PACKAGES=" $PACKAGES dunst"                                               # Graphical Notification manager
@@ -31,7 +31,7 @@ PACKAGES=" $PACKAGES foot foot-terminfo pcmanfm nautilus galculator tar"        
 PACKAGES=" $PACKAGES flatpak xdg-desktop-portal-gtk"                                    # nextcloud and file manager plugin
 PACKAGES=" $PACKAGES nextcloud-client"                                    # nextcloud and file manager plugin
 PACKAGES=" $PACKAGES adwaita-fonts nerd-fonts freefont-ttf font-inter font-awesome font-awesome5 font-awesome6" # fonts
-PACKAGES=" $PACKAGES void-repo-nonfree btop ncdu chrony tlp"  # other tweaks
+PACKAGES=" $PACKAGES intel-ucode btop ncdu chrony tlp"  # other tweaks
 
 ######################
 # Making sure the user running has root privileges
@@ -59,7 +59,7 @@ function logMe {
 ######################
 function logError {
     echo "=== [ERROR] " $1
-    sleep 3
+    sleep 1
 }
 
 
@@ -91,6 +91,13 @@ echo "XDG_RUNTIME_DIR=/run/user/$(id -u)" >> $USERDIR/.pam_environment
 ######################
 logMe "Updating current system"
 sudo xbps-install -Suy
+
+######################
+# Installing nonfree repo
+######################
+logMe "Installing nonfree repo"
+sudo xbps-install -Sy void-repo-nonfree
+
 
 ######################
 # Installing necessary packages
