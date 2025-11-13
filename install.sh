@@ -16,7 +16,7 @@ PACKAGES="firefox tldr blueman bash-completion vim foot fastfetch" # basic tools
 PACKAGES=" $PACKAGES labwc wlroots xorg-server-xwayland"                  # labwc and Xwayland related
 PACKAGES=" $PACKAGES Waybar swaylock wlogout wlopm chayang"               # main tools (bar, lock screen, logout menu, brightness manager, wallpaper manager))
 PACKAGES=" $PACKAGES dbus elogind polkit-elogind gvfs gnome-keyring"      # keychain for KeePassXC, SSH keys and nextcloud
-PACKAGES=" $PACKAGES fuzzel"                                              # Menu for labwc
+PACKAGES=" $PACKAGES fuzzel wget unzip"                                   # Menu for labwc
 PACKAGES=" $PACKAGES wdisplays kanshi"                                    # Graphical monitor manager and profile manager
 PACKAGES=" $PACKAGES dunst"                                               # Graphical Notification manager
 PACKAGES=" $PACKAGES brightnessctl gammastep"                             # Brightness manager and gamma changer
@@ -138,6 +138,17 @@ chown -R $SUDO_USER:$SUDO_USER $USERDIR
 ######################
 logMe "Configuring greetd/tuigreet login manager"
 sed -i 's/^command.*/command = "tuigreet --cmd \x27dbus-run-session labwc\x27"/' /etc/greetd/config.toml
+
+######################
+# Installing nerdfonts
+######################
+logMe "Installing nerdfonts"
+TEMP_DIR=$(mktemp -d)
+wget -O "$TEMP_DIR/font.zip" "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.4.0/SourceCodePro.zip"
+unzip "$TEMP_DIR/font.zip" -d "$TEMP_DIR"
+sudo mv "$TEMP_DIR"/*.{ttf,otf} /usr/share/fonts/
+fc-cache -f -v
+rm -rf "$TEMP_DIR"
 
 ######################
 # adding user to correct groups
