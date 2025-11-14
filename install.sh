@@ -146,7 +146,8 @@ logMe "Installing nerdfonts"
 TEMP_DIR=$(mktemp -d)
 wget -O "$TEMP_DIR/font.zip" "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.4.0/SourceCodePro.zip"
 unzip "$TEMP_DIR/font.zip" -d "$TEMP_DIR"
-sudo mv "$TEMP_DIR"/*.{ttf,otf} /usr/share/fonts/
+mkdir -p /usr/share/fonts/SourceCodePro
+mv "$TEMP_DIR"/*.{ttf,otf} /usr/share/fonts/SourceCodePro/
 fc-cache -f -v
 rm -rf "$TEMP_DIR"
 
