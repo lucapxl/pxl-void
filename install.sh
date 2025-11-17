@@ -113,8 +113,6 @@ echo "LANG=en_GB.UTF-8" > /etc/locale.conf
 echo "en_GB.UTF-8 UTF-8" > /etc/default/libc-locales
 /mnt/target xbps-reconfigure -f glibc-locales
 ln -sf /usr/share/zoneinfo/Europe/Zurich /etc/localtime
-ln -s /etc/sv/dhcpd /var/service
-ln -s /etc/sv/wpa_supplicant /var/service
 useradd -m -s /bin/bash -G wheel,audio,video,floppy,cdrom,optical,kvm,xbuilder $NEWUSERNAME
 sed -i 's/^GRUB_CMDLINE_LINUX_DEFAULT.*/GRUB_CMDLINE_LINUX_DEFAULT="loglevel=4 rd.luks.uuid='"$ROOTDISKUUID"' rd.lvm.vg=linuxconfig_vg"/' /etc/default/grub
 grub-install --target=x86_64-efi --efi-dir=/boot/efi
