@@ -30,11 +30,17 @@ label: gpt
 EOF
 checkExit "partitioning"
 
+# set partitions
+PARTITIONS=($(blkid -o list |grep /dev/nvme0n1))
+PARTITION1=${PARTITIONS[0]}
+PARTITION2=${PARTITIONS[1]}
+PARTITION3=${PARTITIONS[2]}
+
 # create root with luks
-echo -n "$LUKSPASSWORD" | cryptsetup luksFormat --hash=sha512 --key-size=512 --cipher=aes-xts-plain64 $DRIVENAME"3" -
+echo -n "$LUKSPASSWORD" | cryptsetup luksFormat --hash=sha512 --key-size=512 --cipher=aes-xts-plain64 $PARTITION3 -
 checkExit "create root with luks"
 
-echo -n "$LUKSPASSWORD" | cryptsetup luksOpen $DRIVENAME"3" cryptroot -
+echo -n "$LUKSPASSWORD" | cryptsetup luksOpen $PARTITION3 cryptroot -
 checkExit "opening luks drive"
 
 pvcreate /dev/mapper/cryptroot
@@ -53,11 +59,11 @@ lvcreate -n home_lv -l+100%FREE linuxconfig_vg
 checkExit "create root partition"
 
 # create efi partition
-mkfs.fat -F32 $DRIVENAME"1"
+mkfs.fat -F32 $PARTITION1
 checkExit "create efi partition"
 
 # create boot partition
-mkfs.ext4 $DRIVENAME"2"
+mkfs.ext4 $PARTITION1
 checkExit "create boot partition"
 
 # make the root and home patition
@@ -74,9 +80,9 @@ mkdir /mnt/target && mount /dev/linuxconfig_vg/root_lv /mnt/target
 checkExit "mount drives"
 mkdir /mnt/target/home && mount /dev/linuxconfig_vg/home_lv /mnt/target/home
 checkExit "mount drives"
-mkdir /mnt/target/boot && mount $DRIVENAME"2" /mnt/target/boot
+mkdir /mnt/target/boot && mount $PARTITION2 /mnt/target/boot
 checkExit "mount drives"
-mkdir /mnt/target/boot/efi && mount $DRIVENAME"1" /mnt/target/boot/efi
+mkdir /mnt/target/boot/efi && mount $PARTITION1 /mnt/target/boot/efi
 checkExit "mount drives"
 
 mkdir /mnt/target/{dev,sys,proc}
@@ -94,8 +100,11 @@ checkExit "install base system"
 xgenfstab -U /mnt/target > /mnt/target/etc/fstab
 checkExit "copy fstab"
 
-GRUBDRIVE=$DRIVENAME"3"
-ROOTDISKUUID=$(blkid -o value -s UUID $GRUBDRIVE)
+mkdir -p /mnt/target/etc/wpa_supplicant
+cp /etc/wpa_supplicant/wpa_supplicant.conf /mnt/target/etc/wpa_supplicant
+cp -r /root/pxl-void /mnt/target/tmp/
+
+ROOTDISKUUID=$(blkid -o value -s UUID $PARTITION3)
 
 cat << EOF | xchroot /mnt/target /bin/bash
 echo $NEWHOSTNAME > /etc/hostname
@@ -103,6 +112,8 @@ echo "LANG=en_GB.UTF-8" > /etc/locale.conf
 echo "en_GB.UTF-8 UTF-8" > /etc/default/libc-locales
 /mnt/target xbps-reconfigure -f glibc-locales
 ln -sf /usr/share/zoneinfo/Europe/Zurich /etc/localtime
+ln -s /etc/sv/dhcpd /var/service
+ln -s /etc/sv/wpa_supplicant /var/service
 useradd -m -s /bin/bash -G wheel,audio,video,floppy,cdrom,optical,kvm,xbuilder $NEWUSERNAME
 sed -i 's/^GRUB_CMDLINE_LINUX_DEFAULT.*/GRUB_CMDLINE_LINUX_DEFAULT="loglevel=4 rd.luks.uuid='"$ROOTDISKUUID"' rd.lvm.vg=linuxconfig_vg"/' /etc/default/grub
 grub-install --target=x86_64-efi --efi-dir=/boot/efi
