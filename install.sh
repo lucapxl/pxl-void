@@ -98,34 +98,29 @@ checkExit "install base system"
 xgenfstab -U /mnt/target > /mnt/target/etc/fstab
 checkExit "copy fstab"
 
-xchroot /mnt/target echo $NEWHOSTNAME > /etc/hostname
+cat << EOF | xchroot /mnt/target /bin/bash
 
-xchroot /mnt/target echo LANG=en_GB.UTF-8 > /etc/locale.conf
-xchroot /mnt/target echo "en_GB.UTF-8 UTF-8" > /etc/default/libc-locales
-xchroot /mnt/target xbps-reconfigure -f glibc-locales
+$NEWHOSTNAME > /etc/hostname
 
-xchroot /mnt/target ln -sf /usr/share/zoneinfo/Europe/Zurich /etc/localtime
-checkExit "change timezone"
+echo LANG=en_GB.UTF-8 > /etc/locale.conf
+echo "en_GB.UTF-8 UTF-8" > /etc/default/libc-locales
+/mnt/target xbps-reconfigure -f glibc-locales
 
-xchroot /mnt/target echo "root:$ROOTPASSWORD" | chpasswd
-checkExit "change root password"
+ln -sf /usr/share/zoneinfo/Europe/Zurich /etc/localtime
 
-xchroot /mnt/target useradd -m -s /bin/bash -G wheel,audio,video,floppy,cdrom,optical,kvm,xbuilder $NEWUSERNAME
-checkExit "adding user"
+echo "root:$ROOTPASSWORD" | chpasswd
 
-xchroot /mnt/target echo "$NEWUSERNAME:$USERPASSWORD" | chpasswd
-checkExit "change user password"
+useradd -m -s /bin/bash -G wheel,audio,video,floppy,cdrom,optical,kvm,xbuilder $NEWUSERNAME
 
-xchroot /mnt/target ROOTDISKUUID=blkid -o value -s UUID $DRIVENAME"3"
-xchroot /mnt/target sed -i "s/^GRUB_CMDLINE_LINUX_DEFAULT.*/GRUB_CMDLINE_LINUX_DEFAULT=\"loglevel=4 rd.luks.uuid='$ROOTDISKUUID' rd.lvm.vg=linuxconfig_vg\"" /etc/default/grub
-checkExit "change grub cmldline"
+echo "$NEWUSERNAME:$USERPASSWORD" | chpasswd
 
-xchroot /mnt/target grub-install --target=x86_64-efi --efi-dir=/boot/efi
-checkExit "install grub"
+ROOTDISKUUID=blkid -o value -s UUID $DRIVENAME"3"
+sed -i "s/^GRUB_CMDLINE_LINUX_DEFAULT.*/GRUB_CMDLINE_LINUX_DEFAULT=\"loglevel=4 rd.luks.uuid='$ROOTDISKUUID' rd.lvm.vg=linuxconfig_vg\"" /etc/default/grub
 
-xchroot /mnt/target grub-mkconfig -o /boot/grub/grub.cfg
-checkExit "configure grub"
+grub-install --target=x86_64-efi --efi-dir=/boot/efi
 
-xchroot /mnt/target xbps-reconfigure -fa
-checkExit "reconfigure xbps"
+grub-mkconfig -o /boot/grub/grub.cfg
 
+xbps-reconfigure -fa
+
+EOF
