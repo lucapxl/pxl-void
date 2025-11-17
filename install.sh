@@ -1,10 +1,12 @@
 #!/usr/bin/env bash
 # Source: https://linuxconfig.org/how-to-install-void-linux-with-lvm-on-luks-encryption
 
-read -s -p "Enter drive: " DRIVENAME
+read -p "Enter drive: " DRIVENAME
+read -p "Enter root size: " ROOTSIZE
+read -p "Enter swap size: " SWAPSIZE
 read -s -p "Enter luks password: " LUKSPASSWORD
 read -s -p "Enter root password: " ROOTPASSWORD
-read -s -p "Enter user name: " NEWUSERNAME
+read -p "Enter user name: " NEWUSERNAME
 read -s -p "Enter user password: " USERPASSWORD
 
 # partition the disk
@@ -20,8 +22,9 @@ cryptsetup luksFormat --hash=sha512 --key-size=512 --cipher=aes-xts-plain64 $DRI
 cryptsetup luksOpen $DRIVENAME"p3" cryptroot
 pvcreate /dev/mapper/cryptroot
 vgcreate linuxconfig_vg /dev/mapper/cryptroot
-lvcreate -n root_lv -L32GiB linuxconfig_vg
-lvcreate -n swap_lv -L16GiB linuxconfig_vg
+GIGABITES="GiB"
+lvcreate -n root_lv -L$ROOTSIZE$GIGABITES linuxconfig_vg
+lvcreate -n swap_lv -L$SWAPSIZE$GIGABITES linuxconfig_vg
 lvcreate -n home_lv -l+100%FREE linuxconfig_vg
 
 # create efi partition
