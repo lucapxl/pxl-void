@@ -92,7 +92,7 @@ checkExit "mount drives"
 mount --rbind /proc /mnt/target/proc
 checkExit "mount drives"
 
-xbps-install -Syecho  -R https://repo-default.voidlinux.org/current -r /mnt/target base-system cryptsetup lvm2 grub-x86_64-efi
+xbps-install -Sy -R https://repo-default.voidlinux.org/current -r /mnt/target base-system cryptsetup lvm2 grub-x86_64-efi
 checkExit "install base system"
 
 xgenfstab -U /mnt/target > /mnt/target/etc/fstab
