@@ -103,7 +103,7 @@ checkExit "copy fstab"
 
 mkdir -p /mnt/target/etc/wpa_supplicant
 cp /etc/wpa_supplicant/wpa_supplicant.conf /mnt/target/etc/wpa_supplicant
-cp -r /root/pxl-void /mnt/target/tmp/
+cp -r /root/pxl-void /mnt/target/root/
 
 ROOTDISKUUID=$(blkid -o value -s UUID $PARTITION3)
 
