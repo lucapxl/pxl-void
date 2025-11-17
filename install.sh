@@ -17,12 +17,17 @@ checkExit() {
         read -p "Success: click to continue"; 
     else 
         echo "-----------------------------------"
+        echo "-----------------------------------"
         read -p "ERROR: click to continue"; 
+        echo "-----------------------------------"
         echo "-----------------------------------"
     fi
 }
 
 false
+checkExit
+
+true
 checkExit
 
 # partition the disk
@@ -39,41 +44,60 @@ checkExit
 
 # create root with luks
 echo -n "$LUKSPASSWORD" | cryptsetup luksFormat --hash=sha512 --key-size=512 --cipher=aes-xts-plain64 $DRIVENAME"3" -
+checkExit
 
 echo -n "$LUKSPASSWORD" | cryptsetup luksOpen $DRIVENAME"3" cryptroot -
+checkExit
+
 pvcreate /dev/mapper/cryptroot
+checkExit
+
 vgcreate linuxconfig_vg /dev/mapper/cryptroot
+checkExit
+
 GIGABITES="GiB"
 lvcreate -n root_lv -L$ROOTSIZE$GIGABITES linuxconfig_vg
 lvcreate -n swap_lv -L$SWAPSIZE$GIGABITES linuxconfig_vg
+checkExit
+
 lvcreate -n home_lv -l+100%FREE linuxconfig_vg
+checkExit
 
 # create efi partition
 mkfs.fat -F32 $DRIVENAME"p1"
+checkExit
 
 # create boot partition
 mkfs.ext4 $DRIVENAME"p2"
+checkExit
 
 # make the root and home patition
 mkfs.ext4 /dev/linuxconfig_vg/root_lv
 mkfs.ext4 /dev/linuxconfig_vg/home_lv
+checkExit
 
 # make swap
 mkswap /dev/linuxconfig_vg/swap_lv
+checkExit
 
 mkdir /mnt/target && mount /dev/linuxconfig_vg/root_lv /mnt/target
 mkdir /mnt/target/home && mount /dev/linuxconfig_vg/home_lv /mnt/target/home
 mkdir /mnt/target/boot && mount $DRIVENAME"p2" /mnt/target/boot
 mkdir /mnt/target/boot/efi && mount $DRIVENAME"p1" /mnt/target/boot/efi
+checkExit
 
 mkdir /mnt/target/{dev,sys,proc}
 mount --rbind /dev /mnt/target/dev 
 mount --rbind /sys /mnt/target/sys 
 mount --rbind /proc /mnt/target/proc
+checkExit
 
 xbps-install -Sy -R https://repo-default.voidlinux.org/current -r /mnt/target base-system cryptsetup lvm2 grub-x86_64-efi
+checkExit
 
 xgenfstab -U /mnt/target > /mnt/target/etc/fstab
+checkExit
+
 xchroot /mnt/target
 
 echo vpvoid > /etc/hostname
@@ -83,15 +107,24 @@ echo "en_GB.UTF-8 UTF-8" > /etc/default/libc-locales
 xbps-reconfigure -f glibc-locales
 
 ln -sf /usr/share/zoneinfo/Europe/Zurich /etc/localtime
+checkExit
 
 echo "root:$ROOTPASSWORD" | chpasswd
+checkExit
 
 useradd -m -s /bin/bash -G wheel,audio,video,floppy,cdrom,optical,kvm,xbuilder $NEWUSERNAME
 echo "$NEWUSERNAME:$USERPASSWORD" | chpasswd
+checkExit
 
 ROOTDISKUUID=blkid -o value -s UUID $DRIVENAME"3"
 sed -i "s/^GRUB_CMDLINE_LINUX_DEFAULT.*/GRUB_CMDLINE_LINUX_DEFAULT=\"loglevel=4 rd.luks.uuid='$ROOTDISKUUID' rd.lvm.vg=linuxconfig_vg\"" /etc/default/grub
-grub-install --target=x86_64-efi --efi-dir=/boot/efi
-grub-mkconfig -o /boot/grub/grub.cfg
-xbps-reconfigure -fa
+checkExit
 
+grub-install --target=x86_64-efi --efi-dir=/boot/efi
+checkExit
+
+grub-mkconfig -o /boot/grub/grub.cfg
+checkExit
+
+xbps-reconfigure -fa
+checkExit
