@@ -31,7 +31,7 @@ EOF
 checkExit "partitioning"
 
 # set partitions
-PARTITIONS=($(blkid -o list |grep $DRIVENAME))
+PARTITIONS=($(blkid -o device | sort | grep $DRIVENAME))
 PARTITION1=${PARTITIONS[0]}
 PARTITION2=${PARTITIONS[1]}
 PARTITION3=${PARTITIONS[2]}
