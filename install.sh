@@ -99,28 +99,17 @@ xgenfstab -U /mnt/target > /mnt/target/etc/fstab
 checkExit "copy fstab"
 
 cat << EOF | xchroot /mnt/target /bin/bash
-
-$NEWHOSTNAME > /etc/hostname
-
-echo LANG=en_GB.UTF-8 > /etc/locale.conf
+echo $NEWHOSTNAME > /etc/hostname
+echo "LANG=en_GB.UTF-8" > /etc/locale.conf
 echo "en_GB.UTF-8 UTF-8" > /etc/default/libc-locales
 /mnt/target xbps-reconfigure -f glibc-locales
-
 ln -sf /usr/share/zoneinfo/Europe/Zurich /etc/localtime
-
 echo "root:$ROOTPASSWORD" | chpasswd
-
 useradd -m -s /bin/bash -G wheel,audio,video,floppy,cdrom,optical,kvm,xbuilder $NEWUSERNAME
-
 echo "$NEWUSERNAME:$USERPASSWORD" | chpasswd
-
-ROOTDISKUUID=blkid -o value -s UUID $DRIVENAME"3"
-sed -i "s/^GRUB_CMDLINE_LINUX_DEFAULT.*/GRUB_CMDLINE_LINUX_DEFAULT=\"loglevel=4 rd.luks.uuid='$ROOTDISKUUID' rd.lvm.vg=linuxconfig_vg\"" /etc/default/grub
-
+ROOTDISKUUID=$(blkid -o value -s UUID $DRIVENAME"3")
+sed -i "s/^GRUB_CMDLINE_LINUX_DEFAULT.*/GRUB_CMDLINE_LINUX_DEFAULT=\"loglevel=4 rd.luks.uuid='$ROOTDISKUUID' rd.lvm.vg=linuxconfig_vg\"/" /etc/default/grub
 grub-install --target=x86_64-efi --efi-dir=/boot/efi
-
 grub-mkconfig -o /boot/grub/grub.cfg
-
 xbps-reconfigure -fa
-
 EOF
