@@ -64,7 +64,7 @@ mkfs.fat -F32 $PARTITION1
 checkExit "create efi partition"
 
 # create boot partition
-mkfs.ext4 $PARTITION1
+mkfs.ext4 $PARTITION2
 checkExit "create boot partition"
 
 # make the root and home patition
