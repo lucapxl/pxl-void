@@ -55,11 +55,11 @@ lvcreate -n home_lv -l+100%FREE linuxconfig_vg
 checkExit
 
 # create efi partition
-mkfs.fat -F32 $DRIVENAME"p1"
+mkfs.fat -F32 $DRIVENAME"1"
 checkExit
 
 # create boot partition
-mkfs.ext4 $DRIVENAME"p2"
+mkfs.ext4 $DRIVENAME"2"
 checkExit
 
 # make the root and home patition
@@ -73,8 +73,8 @@ checkExit
 
 mkdir /mnt/target && mount /dev/linuxconfig_vg/root_lv /mnt/target
 mkdir /mnt/target/home && mount /dev/linuxconfig_vg/home_lv /mnt/target/home
-mkdir /mnt/target/boot && mount $DRIVENAME"p2" /mnt/target/boot
-mkdir /mnt/target/boot/efi && mount $DRIVENAME"p1" /mnt/target/boot/efi
+mkdir /mnt/target/boot && mount $DRIVENAME"2" /mnt/target/boot
+mkdir /mnt/target/boot/efi && mount $DRIVENAME"1" /mnt/target/boot/efi
 checkExit
 
 mkdir /mnt/target/{dev,sys,proc}
