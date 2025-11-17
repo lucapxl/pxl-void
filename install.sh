@@ -92,11 +92,14 @@ checkExit "mount drives"
 mount --rbind /proc /mnt/target/proc
 checkExit "mount drives"
 
-xbps-install -Sy -R https://repo-default.voidlinux.org/current -r /mnt/target base-system cryptsetup lvm2 grub-x86_64-efi
+echo "y" | xbps-install -Sy -R https://repo-default.voidlinux.org/current -r /mnt/target base-system cryptsetup lvm2 grub-x86_64-efi
 checkExit "install base system"
 
 xgenfstab -U /mnt/target > /mnt/target/etc/fstab
 checkExit "copy fstab"
+
+GRUBDRIVE=$DRIVENAME"3"
+ROOTDISKUUID=$(blkid -o value -s UUID $GRUBDRIVE)
 
 cat << EOF | xchroot /mnt/target /bin/bash
 echo $NEWHOSTNAME > /etc/hostname
@@ -107,7 +110,6 @@ ln -sf /usr/share/zoneinfo/Europe/Zurich /etc/localtime
 echo "root:$ROOTPASSWORD" | chpasswd
 useradd -m -s /bin/bash -G wheel,audio,video,floppy,cdrom,optical,kvm,xbuilder $NEWUSERNAME
 echo "$NEWUSERNAME:$USERPASSWORD" | chpasswd
-ROOTDISKUUID=$(blkid -o value -s UUID $DRIVENAME"3")
 sed -i "s/^GRUB_CMDLINE_LINUX_DEFAULT.*/GRUB_CMDLINE_LINUX_DEFAULT=\"loglevel=4 rd.luks.uuid='$ROOTDISKUUID' rd.lvm.vg=linuxconfig_vg\"/" /etc/default/grub
 grub-install --target=x86_64-efi --efi-dir=/boot/efi
 grub-mkconfig -o /boot/grub/grub.cfg
