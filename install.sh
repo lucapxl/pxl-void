@@ -5,9 +5,25 @@ read -p "Enter drive: " DRIVENAME
 read -p "Enter root size: " ROOTSIZE
 read -p "Enter swap size: " SWAPSIZE
 read -s -p "Enter luks password: " LUKSPASSWORD
+echo ""
 read -s -p "Enter root password: " ROOTPASSWORD
+echo ""
 read -p "Enter user name: " NEWUSERNAME
 read -s -p "Enter user password: " USERPASSWORD
+echo ""
+
+checkExit() {
+    if $?; then 
+        read -p "Success: click to continue"; 
+    else 
+        echo "-----------------------------------"
+        read -p "ERROR: click to continue"; 
+        echo "-----------------------------------"
+    fi
+}
+
+false
+checkExit
 
 # partition the disk
 sfdisk $DRIVENAME << EOF
@@ -16,10 +32,15 @@ label: gpt
 ,1GiB,L
 ,,L
 EOF
+checkExit
+
+
+
 
 # create root with luks
-cryptsetup luksFormat --hash=sha512 --key-size=512 --cipher=aes-xts-plain64 $DRIVENAME"p3"
-cryptsetup luksOpen $DRIVENAME"p3" cryptroot
+echo -n "$LUKSPASSWORD" | cryptsetup luksFormat --hash=sha512 --key-size=512 --cipher=aes-xts-plain64 $DRIVENAME"3" -
+
+echo -n "$LUKSPASSWORD" | cryptsetup luksOpen $DRIVENAME"3" cryptroot -
 pvcreate /dev/mapper/cryptroot
 vgcreate linuxconfig_vg /dev/mapper/cryptroot
 GIGABITES="GiB"
@@ -68,7 +89,7 @@ echo "root:$ROOTPASSWORD" | chpasswd
 useradd -m -s /bin/bash -G wheel,audio,video,floppy,cdrom,optical,kvm,xbuilder $NEWUSERNAME
 echo "$NEWUSERNAME:$USERPASSWORD" | chpasswd
 
-ROOTDISKUUID=blkid -o value -s UUID $DRIVENAME"p3"
+ROOTDISKUUID=blkid -o value -s UUID $DRIVENAME"3"
 sed -i "s/^GRUB_CMDLINE_LINUX_DEFAULT.*/GRUB_CMDLINE_LINUX_DEFAULT=\"loglevel=4 rd.luks.uuid='$ROOTDISKUUID' rd.lvm.vg=linuxconfig_vg\"" /etc/default/grub
 grub-install --target=x86_64-efi --efi-dir=/boot/efi
 grub-mkconfig -o /boot/grub/grub.cfg

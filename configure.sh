@@ -36,8 +36,8 @@ PACKAGES=" $PACKAGES intel-ucode btop ncdu chrony tlp"  # other tweaks
 ######################
 # Making sure the user running has root privileges
 ######################
-if [ "$EUID" -ne 0 ]
-  then echo "Please run with sudo"
+if [ "$EUID" -ne 0 ]; then
+  echo "Please run with sudo"
   exit
 fi
 
