@@ -92,42 +92,40 @@ checkExit "mount drives"
 mount --rbind /proc /mnt/target/proc
 checkExit "mount drives"
 
-xbps-install -Sy -R https://repo-default.voidlinux.org/current -r /mnt/target base-system cryptsetup lvm2 grub-x86_64-efi
+xbps-install -Syecho  -R https://repo-default.voidlinux.org/current -r /mnt/target base-system cryptsetup lvm2 grub-x86_64-efi
 checkExit "install base system"
 
 xgenfstab -U /mnt/target > /mnt/target/etc/fstab
 checkExit "copy fstab"
 
-xchroot /mnt/target
+xchroot /mnt/target echo $NEWHOSTNAME > /etc/hostname
 
-echo $NEWHOSTNAME > /etc/hostname
+xchroot /mnt/target echo LANG=en_GB.UTF-8 > /etc/locale.conf
+xchroot /mnt/target echo "en_GB.UTF-8 UTF-8" > /etc/default/libc-locales
+xchroot /mnt/target xbps-reconfigure -f glibc-locales
 
-echo LANG=en_GB.UTF-8 > /etc/locale.conf
-echo "en_GB.UTF-8 UTF-8" > /etc/default/libc-locales
-xbps-reconfigure -f glibc-locales
-
-ln -sf /usr/share/zoneinfo/Europe/Zurich /etc/localtime
+xchroot /mnt/target ln -sf /usr/share/zoneinfo/Europe/Zurich /etc/localtime
 checkExit "change timezone"
 
-echo "root:$ROOTPASSWORD" | chpasswd
+xchroot /mnt/target echo "root:$ROOTPASSWORD" | chpasswd
 checkExit "change root password"
 
-useradd -m -s /bin/bash -G wheel,audio,video,floppy,cdrom,optical,kvm,xbuilder $NEWUSERNAME
+xchroot /mnt/target useradd -m -s /bin/bash -G wheel,audio,video,floppy,cdrom,optical,kvm,xbuilder $NEWUSERNAME
 checkExit "adding user"
 
-echo "$NEWUSERNAME:$USERPASSWORD" | chpasswd
+xchroot /mnt/target echo "$NEWUSERNAME:$USERPASSWORD" | chpasswd
 checkExit "change user password"
 
-ROOTDISKUUID=blkid -o value -s UUID $DRIVENAME"3"
-sed -i "s/^GRUB_CMDLINE_LINUX_DEFAULT.*/GRUB_CMDLINE_LINUX_DEFAULT=\"loglevel=4 rd.luks.uuid='$ROOTDISKUUID' rd.lvm.vg=linuxconfig_vg\"" /etc/default/grub
+xchroot /mnt/target ROOTDISKUUID=blkid -o value -s UUID $DRIVENAME"3"
+xchroot /mnt/target sed -i "s/^GRUB_CMDLINE_LINUX_DEFAULT.*/GRUB_CMDLINE_LINUX_DEFAULT=\"loglevel=4 rd.luks.uuid='$ROOTDISKUUID' rd.lvm.vg=linuxconfig_vg\"" /etc/default/grub
 checkExit "change grub cmldline"
 
-grub-install --target=x86_64-efi --efi-dir=/boot/efi
+xchroot /mnt/target grub-install --target=x86_64-efi --efi-dir=/boot/efi
 checkExit "install grub"
 
-grub-mkconfig -o /boot/grub/grub.cfg
+xchroot /mnt/target grub-mkconfig -o /boot/grub/grub.cfg
 checkExit "configure grub"
 
-xbps-reconfigure -fa
+xchroot /mnt/target xbps-reconfigure -fa
 checkExit "reconfigure xbps"
 
