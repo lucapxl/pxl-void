@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 # Source: https://linuxconfig.org/how-to-install-void-linux-with-lvm-on-luks-encryption
+# check also: https://codeberg.org/Le0xFF/VoidLinuxInstaller/src/branch/main/vli.sh
 
 lsblk
 
