@@ -9,11 +9,7 @@ read -p "Enter root size: " ROOTSIZE
 read -p "Enter swap size: " SWAPSIZE
 read -s -p "Enter luks password: " LUKSPASSWORD
 echo ""
-read -s -p "Enter root password: " ROOTPASSWORD
-echo ""
-read -p "Enter user name: " NEWUSERNAME
-read -s -p "Enter user password: " USERPASSWORD
-echo ""
+read -p "Enter normal user name: " NEWUSERNAME
 
 checkExit() {
     if [ $? -eq 1 ]; then 
@@ -107,11 +103,14 @@ echo "LANG=en_GB.UTF-8" > /etc/locale.conf
 echo "en_GB.UTF-8 UTF-8" > /etc/default/libc-locales
 /mnt/target xbps-reconfigure -f glibc-locales
 ln -sf /usr/share/zoneinfo/Europe/Zurich /etc/localtime
-echo "root:$ROOTPASSWORD" | chpasswd
 useradd -m -s /bin/bash -G wheel,audio,video,floppy,cdrom,optical,kvm,xbuilder $NEWUSERNAME
-echo "$NEWUSERNAME:$USERPASSWORD" | chpasswd
-sed -i "s/^GRUB_CMDLINE_LINUX_DEFAULT.*/GRUB_CMDLINE_LINUX_DEFAULT=\"loglevel=4 rd.luks.uuid='$ROOTDISKUUID' rd.lvm.vg=linuxconfig_vg\"/" /etc/default/grub
+sed -i 's/^GRUB_CMDLINE_LINUX_DEFAULT.*/GRUB_CMDLINE_LINUX_DEFAULT="loglevel=4 rd.luks.uuid='"$ROOTDISKUUID"' rd.lvm.vg=linuxconfig_vg"/' /etc/default/grub
 grub-install --target=x86_64-efi --efi-dir=/boot/efi
 grub-mkconfig -o /boot/grub/grub.cfg
 xbps-reconfigure -fa
 EOF
+
+echo "Set new password for root"
+xchroot /mnt/target passwd root
+echo "Set new password for user $NEWUSERNAME"
+xchroot /mnt/target passwd $NEWUSERNAME
