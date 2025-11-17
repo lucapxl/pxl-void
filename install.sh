@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 # Source: https://linuxconfig.org/how-to-install-void-linux-with-lvm-on-luks-encryption
 
+lsblk
+
 read -p "Enter drive: " DRIVENAME
 read -p "Enter root size: " ROOTSIZE
 read -p "Enter swap size: " SWAPSIZE
@@ -13,22 +15,14 @@ read -s -p "Enter user password: " USERPASSWORD
 echo ""
 
 checkExit() {
-    if $?; then 
+    if [ $? -eq 0 ]; then 
         read -p "Success: click to continue"; 
     else 
         echo "-----------------------------------"
         echo "-----------------------------------"
         read -p "ERROR: click to continue"; 
-        echo "-----------------------------------"
-        echo "-----------------------------------"
     fi
 }
-
-false
-checkExit
-
-true
-checkExit
 
 # partition the disk
 sfdisk $DRIVENAME << EOF
@@ -38,9 +32,6 @@ label: gpt
 ,,L
 EOF
 checkExit
-
-
-
 
 # create root with luks
 echo -n "$LUKSPASSWORD" | cryptsetup luksFormat --hash=sha512 --key-size=512 --cipher=aes-xts-plain64 $DRIVENAME"3" -
