@@ -21,7 +21,7 @@ PACKAGES=" $PACKAGES wdisplays kanshi"                                    # Grap
 PACKAGES=" $PACKAGES dunst"                                               # Graphical Notification manager
 PACKAGES=" $PACKAGES brightnessctl gammastep"                             # Brightness manager and gamma changer
 PACKAGES=" $PACKAGES playerctl"                                           # Player buttons manager
-PACKAGES=" $PACKAGES pavucontrol pulseaudio"                              # audio devices manager
+PACKAGES=" $PACKAGES pavucontrol pipewire sof-firmware"                   # audio devices manager
 PACKAGES=" $PACKAGES NetworkManager"                                      # network manager
 PACKAGES=" $PACKAGES grim slurp swaybg"                                   # screenshot and region selection tools
 PACKAGES=" $PACKAGES adwaita-icon-theme"                                  # icon package
@@ -178,6 +178,14 @@ polkit.addRule(function(action, subject) {
 EOL
 
 ######################
+# configuring pipewire
+######################
+logMe "configuring pipewire"
+mkdir -p /etc/pipewire/pipewire.conf.d
+ln -s /usr/share/examples/wireplumber/10-wireplumber.conf /etc/pipewire/pipewire.conf.d/
+ln -s /usr/share/examples/pipewire/20-pipewire-pulse.conf /etc/pipewire/pipewire.conf.d/
+
+######################
 # Disabling wpa_supplicant and dhcpd services
 ######################
 logMe "Disabling wpa_supplicant and dhcpd services"
@@ -197,6 +205,7 @@ sudo ln -s /etc/sv/tlp /var/service/
 sudo ln -s /etc/sv/polkitd /var/service/
 sudo ln -s /etc/sv/socklog-unix /var/service/
 sudo ln -s /etc/sv/nanoklogd /var/service/
+sudo ln -s /etc/sv/bluetoothd /var/service/
 
 ######################
 # all done, rebooting
