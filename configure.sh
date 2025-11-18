@@ -14,7 +14,7 @@ TOOLSDIR=$(echo "$USERDIR/_tools")
 ######################
 PACKAGES="firefox tldr blueman bash-completion vim foot fastfetch" # basic tools
 PACKAGES=" $PACKAGES labwc wlroots xorg-server-xwayland"                  # labwc and Xwayland related
-PACKAGES=" $PACKAGES Waybar swaylock wlogout wlopm chayang"               # main tools (bar, lock screen, logout menu, brightness manager, wallpaper manager))
+PACKAGES=" $PACKAGES Waybar swaylock wlogout wlopm chayang swayidle"      # main tools (bar, lock screen, logout menu, brightness manager, wallpaper manager))
 PACKAGES=" $PACKAGES dbus elogind polkit-elogind gvfs gnome-keyring"      # keychain for KeePassXC, SSH keys and nextcloud
 PACKAGES=" $PACKAGES fuzzel wget unzip"                                   # Menu for labwc
 PACKAGES=" $PACKAGES wdisplays kanshi"                                    # Graphical monitor manager and profile manager
@@ -31,7 +31,11 @@ PACKAGES=" $PACKAGES foot foot-terminfo pcmanfm nautilus galculator tar"  # term
 PACKAGES=" $PACKAGES flatpak xdg-desktop-portal-gtk"                      # nextcloud and file manager plugin
 PACKAGES=" $PACKAGES nextcloud-client tmux"                               # nextcloud and file manager plugin
 PACKAGES=" $PACKAGES adwaita-fonts freefont-ttf font-inter font-awesome font-awesome5 font-awesome6" # fonts
-PACKAGES=" $PACKAGES intel-ucode btop ncdu chrony tlp"  # other tweaks
+PACKAGES=" $PACKAGES intel-ucode btop ncdu chrony tlp"                    # other tweaks
+PACKAGES=" $PACKAGES socklog-void"                              # other tweaks
+
+
+
 
 ######################
 # Making sure the user running has root privileges
@@ -191,6 +195,8 @@ sudo ln -s /etc/sv/greetd /var/service/
 sudo ln -s /etc/sv/chronyd /var/service/
 sudo ln -s /etc/sv/tlp /var/service/
 sudo ln -s /etc/sv/polkitd /var/service/
+sudo ln -s /etc/sv/socklog-unix /var/service/
+sudo ln -s /etc/sv/nanoklogd /var/service/
 
 ######################
 # all done, rebooting
