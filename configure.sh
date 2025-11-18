@@ -12,7 +12,7 @@ TOOLSDIR=$(echo "$USERDIR/_tools")
 ######################
 # Packages
 ######################
-PACKAGES="firefox tldr blueman bash-completion vim foot fastfetch" # basic tools
+PACKAGES="firefox tldr blueman bash-completion vim foot fastfetch"        # basic tools
 PACKAGES=" $PACKAGES labwc wlroots xorg-server-xwayland"                  # labwc and Xwayland related
 PACKAGES=" $PACKAGES Waybar swaylock wlogout wlopm chayang swayidle"      # main tools (bar, lock screen, logout menu, brightness manager, wallpaper manager))
 PACKAGES=" $PACKAGES dbus elogind polkit-elogind gvfs gnome-keyring"      # keychain for KeePassXC, SSH keys and nextcloud
@@ -23,7 +23,7 @@ PACKAGES=" $PACKAGES brightnessctl gammastep"                             # Brig
 PACKAGES=" $PACKAGES playerctl"                                           # Player buttons manager
 PACKAGES=" $PACKAGES pavucontrol pipewire sof-firmware"                   # audio devices manager
 PACKAGES=" $PACKAGES NetworkManager"                                      # network manager
-PACKAGES=" $PACKAGES grim slurp swaybg"                                   # screenshot and region selection tools
+PACKAGES=" $PACKAGES grim slurp swaybg mousepad"                          # screenshot and region selection tools
 PACKAGES=" $PACKAGES adwaita-icon-theme"                                  # icon package
 PACKAGES=" $PACKAGES tuigreet greetd"                                     # login manager
 PACKAGES=" $PACKAGES mesa-dri mesa-intel-dri intel-video-accel"           # login manager
@@ -32,10 +32,7 @@ PACKAGES=" $PACKAGES flatpak xdg-desktop-portal-gtk"                      # next
 PACKAGES=" $PACKAGES nextcloud-client tmux"                               # nextcloud and file manager plugin
 PACKAGES=" $PACKAGES adwaita-fonts freefont-ttf font-inter font-awesome font-awesome5 font-awesome6" # fonts
 PACKAGES=" $PACKAGES intel-ucode btop ncdu chrony tlp"                    # other tweaks
-PACKAGES=" $PACKAGES socklog-void"                              # other tweaks
-
-
-
+PACKAGES=" $PACKAGES socklog-void"                                        # log daemon
 
 ######################
 # Making sure the user running has root privileges
@@ -65,7 +62,6 @@ function logError {
     echo "=== [ERROR] " $1
     sleep 1
 }
-
 
 ######################
 # creating necessary folders
@@ -102,7 +98,6 @@ sudo xbps-install -Suy
 logMe "Installing nonfree repo"
 sudo xbps-install -Sy void-repo-nonfree
 
-
 ######################
 # Installing necessary packages
 ######################
@@ -115,10 +110,7 @@ sudo xbps-install -Sy $PACKAGES
 logMe "Installing Flathub"
 sudo flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
 flatpak install flathub org.keepassxc.KeePassXC -y
-flatpak install flathub io.github.flattool.Warehouse -y
-flatpak install flathub org.dupot.easyflatpak -y
 flatpak install flathub com.visualstudio.code -y
-flatpak install flathub org.xfce.mousepad -y
 
 ######################
 # Download and apply config files
@@ -166,7 +158,7 @@ sudo usermod -aG input $SUDO_USER
 ######################
 # enabling automount of usb drives
 ######################
-logMe "enabling automount of usb drives"
+logMe "Enabling automount of usb drives"
 sudo cat >/etc/polkit-1/rules.d/50-udisks.rules <<EOL
 polkit.addRule(function(action, subject) {
     if (subject.isInGroup("wheel")) {
@@ -180,7 +172,7 @@ EOL
 ######################
 # configuring pipewire
 ######################
-logMe "configuring pipewire"
+logMe "Configuring pipewire"
 mkdir -p /etc/pipewire/pipewire.conf.d
 ln -s /usr/share/examples/wireplumber/10-wireplumber.conf /etc/pipewire/pipewire.conf.d/
 ln -s /usr/share/examples/pipewire/20-pipewire-pulse.conf /etc/pipewire/pipewire.conf.d/
@@ -188,7 +180,7 @@ ln -s /usr/share/examples/pipewire/20-pipewire-pulse.conf /etc/pipewire/pipewire
 ######################
 # Disabling wpa_supplicant and dhcpd services
 ######################
-logMe "Disabling wpa_supplicant and dhcpd services"
+logMe "Disabling acpid, wpa_supplicant and dhcpd services"
 sudo rm -rf /var/service/wpa_supplicant
 sudo rm -rf /var/service/dhcpcd
 sudo rm -rf /var/service/acpid
@@ -205,7 +197,6 @@ sudo ln -s /etc/sv/tlp /var/service/
 sudo ln -s /etc/sv/polkitd /var/service/
 sudo ln -s /etc/sv/socklog-unix /var/service/
 sudo ln -s /etc/sv/nanoklogd /var/service/
-sudo ln -s /etc/sv/bluetoothd /var/service/
 
 ######################
 # all done, rebooting
