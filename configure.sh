@@ -12,27 +12,28 @@ TOOLSDIR=$(echo "$USERDIR/_tools")
 ######################
 # Packages
 ######################
-PACKAGES="firefox tldr blueman bash-completion vim foot fastfetch"        # basic tools
+PACKAGES="firefox tldr bash-completion vim mousepad fastfetch"            # basic software
 PACKAGES=" $PACKAGES labwc wlroots xorg-server-xwayland"                  # labwc and Xwayland related
-PACKAGES=" $PACKAGES Waybar swaylock wlogout wlopm chayang swayidle"      # main tools (bar, lock screen, logout menu, brightness manager, wallpaper manager))
+PACKAGES=" $PACKAGES Waybar swaylock wlogout wlopm chayang swayidle"      # main wayland tools (bar, lock screen, logout menu, brightness manager, wallpaper manager)
 PACKAGES=" $PACKAGES dbus elogind polkit-elogind gvfs gnome-keyring"      # keychain for KeePassXC, SSH keys and nextcloud
-PACKAGES=" $PACKAGES fuzzel wget unzip"                                   # Menu for labwc
-PACKAGES=" $PACKAGES wdisplays kanshi"                                    # Graphical monitor manager and profile manager
+PACKAGES=" $PACKAGES fuzzel"                                              # Menu for labwc
+PACKAGES=" $PACKAGES wdisplays kanshi brightnessctl gammastep"            # Graphical monitor manager and profile manager, brightness manager and gamma changer
 PACKAGES=" $PACKAGES dunst"                                               # Graphical Notification manager
-PACKAGES=" $PACKAGES brightnessctl gammastep"                             # Brightness manager and gamma changer
 PACKAGES=" $PACKAGES playerctl"                                           # Player buttons manager
 PACKAGES=" $PACKAGES pavucontrol pipewire sof-firmware"                   # audio devices manager
 PACKAGES=" $PACKAGES NetworkManager"                                      # network manager
-PACKAGES=" $PACKAGES grim slurp swaybg mousepad"                          # screenshot and region selection tools
+PACKAGES=" $PACKAGES grim slurp swaybg"                                   # screenshot and region selection tools
 PACKAGES=" $PACKAGES adwaita-icon-theme"                                  # icon package
 PACKAGES=" $PACKAGES tuigreet greetd"                                     # login manager
-PACKAGES=" $PACKAGES mesa-dri mesa-intel-dri intel-video-accel"           # login manager
-PACKAGES=" $PACKAGES foot foot-terminfo pcmanfm nautilus galculator tar"  # terminal, file manager, flatpak caltulator and tar
-PACKAGES=" $PACKAGES flatpak xdg-desktop-portal-gtk"                      # nextcloud and file manager plugin
-PACKAGES=" $PACKAGES nextcloud-client tmux"                               # nextcloud and file manager plugin
+PACKAGES=" $PACKAGES mesa-dri mesa-intel-dri intel-video-accel"           # video drivers
+PACKAGES=" $PACKAGES foot foot-terminfo pcmanfm nautilus galculator"      # terminal, file manager, flatpak caltulator and tar
+PACKAGES=" $PACKAGES flatpak xdg-desktop-portal-gtk"                      # flatpak
+PACKAGES=" $PACKAGES nextcloud-client tmux"                               # nextcloud
 PACKAGES=" $PACKAGES adwaita-fonts freefont-ttf font-inter font-awesome font-awesome5 font-awesome6" # fonts
 PACKAGES=" $PACKAGES intel-ucode btop ncdu chrony tlp"                    # other tweaks
 PACKAGES=" $PACKAGES socklog-void"                                        # log daemon
+PACKAGES=" $PACKAGES blueman libspa-bluetooth"                            # bluetooth utils
+PACKAGES=" $PACKAGES tar wget unzip"                                      # other utils
 
 ######################
 # Making sure the user running has root privileges
@@ -201,5 +202,6 @@ sudo ln -s /etc/sv/nanoklogd /var/service/
 ######################
 # all done, rebooting
 ######################
-logMe "[DONE] Installation completed! remember to reconnect to your network with 'nmtui' please reboot your system"
-read -p ""
+logMe "[DONE] Installation completed!"
+read -p "press any key to reboot"
+loginctl reboot

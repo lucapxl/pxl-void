@@ -2,15 +2,45 @@
 # Source: https://linuxconfig.org/how-to-install-void-linux-with-lvm-on-luks-encryption
 # check also: https://codeberg.org/Le0xFF/VoidLinuxInstaller/src/branch/main/vli.sh
 
-lsblk
-
-read -p "Enter drive: " DRIVENAME
-read -p "Enter hostname: " NEWHOSTNAME
-read -p "Enter root size: " ROOTSIZE
-read -p "Enter swap size: " SWAPSIZE
-read -s -p "Enter luks password: " LUKSPASSWORD
+clear
+echo "Enter the name for the normal user"
 echo ""
-read -p "Enter normal user name: " NEWUSERNAME
+read -p "Username: " NEWUSERNAME
+
+clear
+echo "Chose an hostname for your system"
+echo
+read -p "Hostname: " NEWHOSTNAME
+
+clear
+lsblk
+echo 
+echo "select drive where to install the system. remember to add /dev/ to your drivename"
+echo 
+read -p "Drive: " DRIVENAME
+echo
+echo "The system will be partitioned for UEFI systems."
+echo "Evreything (but /boot) will be encrypted with LUKS"
+echo 
+echo "Chose a size for the root "/" Partition and for the SWAP partition"
+echo "/home will take the rest of the available space in the LUKS container"
+echo "example: 20G"
+echo
+read -p "Size for /: " ROOTSIZE
+read -p "Size for SWAP: " SWAPSIZE
+read -s -p "Enter luks password: " LUKSPASSWORD
+
+clear
+echo "INSTALLATION SUMMARY"
+echo
+echo "Hostname:   $NEWHOSTNAME"
+echo "Username:   $NEWUSERNAME"
+echo "Drive:      $DRIVENAME"
+echo "Size /:     $ROOTSIZE"
+echo "Size SWAP:  $SWAPSIZE"
+echo 
+read -p "press any key to confirm or ctrl+c to exit installation" CONFIRMATION
+exit
 
 checkExit() {
     if [ $? -eq 1 ]; then 
@@ -77,6 +107,9 @@ checkExit "format drives"
 mkswap /dev/linuxconfig_vg/swap_lv
 checkExit "make swap"
 
+swapon /dev/linuxconfig_vg/swap_lv
+checkExit "activate swap"
+
 mkdir /mnt/target && mount /dev/linuxconfig_vg/root_lv /mnt/target
 checkExit "mount drives"
 mkdir /mnt/target/home && mount /dev/linuxconfig_vg/home_lv /mnt/target/home
@@ -95,7 +128,7 @@ checkExit "mount drives"
 mount --rbind /proc /mnt/target/proc
 checkExit "mount drives"
 
-echo "y" | xbps-install -Sy -R https://repo-default.voidlinux.org/current -r /mnt/target base-system cryptsetup lvm2 grub-x86_64-efi
+echo "y" | xbps-install -Sy -R https://repo-default.voidlinux.org/current -r /mnt/target base-system cryptsetup lvm2 grub-x86_64-efi NetworkManager
 checkExit "install base system"
 
 xgenfstab -U /mnt/target > /mnt/target/etc/fstab
@@ -111,6 +144,7 @@ cat << EOF | xchroot /mnt/target /bin/bash
 echo $NEWHOSTNAME > /etc/hostname
 echo "LANG=en_GB.UTF-8" > /etc/locale.conf
 echo "en_GB.UTF-8 UTF-8" > /etc/default/libc-locales
+ln -s /etc/sv/NetworkManager /var/service/
 /mnt/target xbps-reconfigure -f glibc-locales
 ln -sf /usr/share/zoneinfo/Europe/Zurich /etc/localtime
 useradd -m -s /bin/bash -G wheel,audio,video,floppy,cdrom,optical,kvm,xbuilder $NEWUSERNAME
@@ -120,7 +154,16 @@ grub-mkconfig -o /boot/grub/grub.cfg
 xbps-reconfigure -fa
 EOF
 
+clear
 echo "Set new password for root"
+echo
 xchroot /mnt/target passwd root
+
+clear
 echo "Set new password for user $NEWUSERNAME"
+echo
 xchroot /mnt/target passwd $NEWUSERNAME
+
+clear
+echo "Installation is done. you might want to reboot the system"
+echo "After rebooting, remember to connect to your network using 'nmtui'"
