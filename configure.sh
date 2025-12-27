@@ -48,6 +48,16 @@ if [[ -z "$SUDO_USER" ]]; then
   exit
 fi
 
+checkExit() {
+    if [ $? -eq 1 ]; then 
+        echo "-----------------------------------"
+        echo "-----------------------------------"
+        echo "ERROR: failed step: $1"
+        read -p "click to continue"; 
+        exit
+    fi
+}
+
 ######################
 # Output function
 ######################
@@ -91,19 +101,22 @@ echo "XDG_RUNTIME_DIR=/run/user/$(id -u)" >> $USERDIR/.pam_environment
 # Updating current system
 ######################
 logMe "Updating current system"
-sudo xbps-install -Suy
+sudo xbps-install -Suy > /dev/null 2>&1
+checkExit "Updatting current system"
 
 ######################
 # Installing nonfree repo
 ######################
 logMe "Installing nonfree repo"
-sudo xbps-install -Sy void-repo-nonfree
+sudo xbps-install -Sy void-repo-nonfree > /dev/null 2>&1
+checkExit "Installing nonfree repo"
 
 ######################
 # Installing necessary packages
 ######################
 logMe "Installing necessary packages via xbps"
-sudo xbps-install -Sy $PACKAGES
+sudo xbps-install -Sy $PACKAGES > /dev/null 2>&1
+checkExit "Installing packages"
 
 ######################
 # Installing flathub and flatpaks
@@ -203,5 +216,4 @@ sudo ln -s /etc/sv/nanoklogd /var/service/
 # all done, rebooting
 ######################
 logMe "[DONE] Installation completed!"
-read -p "press any key to reboot"
 loginctl reboot

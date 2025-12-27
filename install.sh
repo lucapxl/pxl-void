@@ -40,7 +40,6 @@ echo "Size /:     $ROOTSIZE"
 echo "Size SWAP:  $SWAPSIZE"
 echo 
 read -p "press any key to confirm or ctrl+c to exit installation" CONFIRMATION
-exit
 
 checkExit() {
     if [ $? -eq 1 ]; then 
@@ -144,7 +143,8 @@ cat << EOF | xchroot /mnt/target /bin/bash
 echo $NEWHOSTNAME > /etc/hostname
 echo "LANG=en_GB.UTF-8" > /etc/locale.conf
 echo "en_GB.UTF-8 UTF-8" > /etc/default/libc-locales
-ln -s /etc/sv/NetworkManager /var/service/
+ln -s /etc/sv/wpa_supplicant /var/service/
+ln -s /etc/sv/dhcpcd /var/service/
 /mnt/target xbps-reconfigure -f glibc-locales
 ln -sf /usr/share/zoneinfo/Europe/Zurich /etc/localtime
 useradd -m -s /bin/bash -G wheel,audio,video,floppy,cdrom,optical,kvm,xbuilder $NEWUSERNAME
@@ -166,4 +166,4 @@ xchroot /mnt/target passwd $NEWUSERNAME
 
 clear
 echo "Installation is done. you might want to reboot the system"
-echo "After rebooting, remember to connect to your network using 'nmtui'"
+
