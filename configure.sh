@@ -12,7 +12,7 @@ TOOLSDIR=$(echo "$USERDIR/_tools")
 ######################
 # Packages
 ######################
-PACKAGES="firefox tldr bash-completion vim mousepad fastfetch"            # basic software
+PACKAGES="firefox tldr bash-completion vim neovim mousepad fastfetch"     # basic software
 PACKAGES=" $PACKAGES labwc wlroots xorg-server-xwayland"                  # labwc and Xwayland related
 PACKAGES=" $PACKAGES Waybar swaylock wlogout wlopm chayang swayidle"      # main wayland tools (bar, lock screen, logout menu, brightness manager, wallpaper manager)
 PACKAGES=" $PACKAGES dbus elogind polkit-elogind gvfs gnome-keyring"      # keychain for KeePassXC, SSH keys and nextcloud
@@ -26,10 +26,10 @@ PACKAGES=" $PACKAGES grim slurp swaybg"                                   # scre
 PACKAGES=" $PACKAGES adwaita-icon-theme"                                  # icon package
 PACKAGES=" $PACKAGES tuigreet greetd"                                     # login manager
 PACKAGES=" $PACKAGES mesa-dri mesa-intel-dri intel-video-accel"           # video drivers
-PACKAGES=" $PACKAGES kitty pcmanfm nautilus galculator"                   # terminal, file manager, flatpak caltulator and tar
+PACKAGES=" $PACKAGES kitty foot pcmanfm nautilus galculator"              # terminal, file manager, flatpak caltulator and tar
 PACKAGES=" $PACKAGES flatpak xdg-desktop-portal-gtk"                      # flatpak
 PACKAGES=" $PACKAGES nextcloud-client tmux"                               # nextcloud
-PACKAGES=" $PACKAGES adwaita-fonts freefont-ttf font-inter font-awesome font-awesome5 font-awesome6" # fonts
+PACKAGES=" $PACKAGES adwaita-fonts freefont-ttf font-inter font-awesome font-awesome5 font-awesome6 nerd-fonts" # fonts
 PACKAGES=" $PACKAGES intel-ucode btop ncdu chrony tlp"                    # other tweaks
 PACKAGES=" $PACKAGES socklog-void"                                        # log daemon
 PACKAGES=" $PACKAGES blueman libspa-bluetooth"                            # bluetooth utils
