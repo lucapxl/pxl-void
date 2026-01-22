@@ -26,14 +26,14 @@ PACKAGES=" $PACKAGES grim slurp swaybg"                                   # scre
 PACKAGES=" $PACKAGES adwaita-icon-theme"                                  # icon package
 PACKAGES=" $PACKAGES tuigreet greetd"                                     # login manager
 PACKAGES=" $PACKAGES mesa-dri mesa-intel-dri intel-video-accel"           # video drivers
-PACKAGES=" $PACKAGES kitty foot pcmanfm nautilus galculator"              # terminal, file manager, flatpak caltulator and tar
+PACKAGES=" $PACKAGES kitty foot Thunar nautilus galculator eom"           # terminal, file manager, flatpak caltulator and image viewer
 PACKAGES=" $PACKAGES flatpak xdg-desktop-portal-gtk"                      # flatpak
 PACKAGES=" $PACKAGES nextcloud-client tmux"                               # nextcloud
 PACKAGES=" $PACKAGES adwaita-fonts freefont-ttf font-inter font-awesome font-awesome5 font-awesome6 nerd-fonts" # fonts
 PACKAGES=" $PACKAGES intel-ucode btop ncdu chrony tlp"                    # other tweaks
 PACKAGES=" $PACKAGES socklog-void"                                        # log daemon
 PACKAGES=" $PACKAGES blueman libspa-bluetooth"                            # bluetooth utils
-PACKAGES=" $PACKAGES tar wget unzip"                                      # other utils
+PACKAGES=" $PACKAGES tar wget unzip vpm"                                  # other utils
 
 ######################
 # Making sure the user running has root privileges
