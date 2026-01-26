@@ -29,7 +29,7 @@ PACKAGES=" $PACKAGES mesa-dri mesa-intel-dri intel-video-accel"           # vide
 PACKAGES=" $PACKAGES kitty foot Thunar nautilus galculator eom"           # terminal, file manager, flatpak caltulator and image viewer
 PACKAGES=" $PACKAGES flatpak xdg-desktop-portal-gtk"                      # flatpak
 PACKAGES=" $PACKAGES nextcloud-client tmux"                               # nextcloud
-PACKAGES=" $PACKAGES adwaita-fonts freefont-ttf font-inter font-awesome font-awesome5 font-awesome6 nerd-fonts" # fonts
+PACKAGES=" $PACKAGES adwaita-fonts freefont-ttf font-inter font-awesome font-awesome5 font-awesome6 nerd-fonts noto-fonts-emoji" # fonts
 PACKAGES=" $PACKAGES intel-ucode btop ncdu chrony tlp"                    # other tweaks
 PACKAGES=" $PACKAGES socklog-void"                                        # log daemon
 PACKAGES=" $PACKAGES blueman libspa-bluetooth"                            # bluetooth utils
@@ -86,10 +86,8 @@ cd $TOOLSDIR
 ######################
 # adding aliases for xbps
 ######################
-logMe "Adding xbps-* bash aliases"
-grep -qi "alias xi=.*" $USERDIR/.bashrc || echo "alias xi='sudo xbps-install -S'" >> $USERDIR/.bashrc
-grep -qi "alias xu=.*" $USERDIR/.bashrc || echo "alias xu='sudo xbps-install -Su'" >> $USERDIR/.bashrc
-grep -qi "alias xs=.*" $USERDIR/.bashrc || echo "alias xs='sudo xbps-query -Rs'" >> $USERDIR/.bashrc
+logMe "Adding vpm bash aliases"
+grep -qi "alias vpm=.*" $USERDIR/.bashrc || echo "alias vpm='sudo vpm'" >> $USERDIR/.bashrc
 
 ######################
 # setting variables
@@ -152,14 +150,14 @@ sed -i 's/^command.*/command = "tuigreet --cmd \x27dbus-run-session labwc\x27"/'
 ######################
 # Installing nerdfonts
 ######################
-logMe "Installing nerdfonts"
-TEMP_DIR=$(mktemp -d)
-wget -O "$TEMP_DIR/font.zip" "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.4.0/SourceCodePro.zip"
-unzip "$TEMP_DIR/font.zip" -d "$TEMP_DIR"
-mkdir -p /usr/share/fonts/SourceCodePro
-mv "$TEMP_DIR"/*.{ttf,otf} /usr/share/fonts/SourceCodePro/
-fc-cache -f -v
-rm -rf "$TEMP_DIR"
+# logMe "Installing nerdfonts"
+# TEMP_DIR=$(mktemp -d)
+# wget -O "$TEMP_DIR/font.zip" "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.4.0/SourceCodePro.zip"
+# unzip "$TEMP_DIR/font.zip" -d "$TEMP_DIR"
+# mkdir -p /usr/share/fonts/SourceCodePro
+# mv "$TEMP_DIR"/*.{ttf,otf} /usr/share/fonts/SourceCodePro/
+# fc-cache -f -v
+# rm -rf "$TEMP_DIR"
 
 ######################
 # adding user to correct groups
