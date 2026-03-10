@@ -23,10 +23,10 @@ PACKAGES=" $PACKAGES playerctl"                                           # Play
 PACKAGES=" $PACKAGES pavucontrol pipewire sof-firmware"                   # audio devices manager
 PACKAGES=" $PACKAGES NetworkManager"                                      # network manager
 PACKAGES=" $PACKAGES grim slurp swaybg"                                   # screenshot and region selection tools
-PACKAGES=" $PACKAGES adwaita-icon-theme"                                  # icon package
+PACKAGES=" $PACKAGES adwaita-icon-theme papirus-icon-theme"               # icon package
 PACKAGES=" $PACKAGES tuigreet greetd"                                     # login manager
 PACKAGES=" $PACKAGES mesa-dri mesa-intel-dri intel-video-accel"           # video drivers
-PACKAGES=" $PACKAGES kitty foot Thunar nautilus galculator eom"           # terminal, file manager, flatpak caltulator and image viewer
+PACKAGES=" $PACKAGES kitty foot Thunar thunar-archive-plugin tumbler galculator eom"  # terminal, file manager, flatpak calculator and image viewer
 PACKAGES=" $PACKAGES flatpak xdg-desktop-portal-gtk"                      # flatpak
 PACKAGES=" $PACKAGES nextcloud-client tmux"                               # nextcloud
 PACKAGES=" $PACKAGES adwaita-fonts freefont-ttf font-inter font-awesome font-awesome5 font-awesome6 nerd-fonts noto-fonts-emoji" # fonts
@@ -158,6 +158,26 @@ sed -i 's/^command.*/command = "tuigreet --cmd \x27dbus-run-session labwc\x27"/'
 # mv "$TEMP_DIR"/*.{ttf,otf} /usr/share/fonts/SourceCodePro/
 # fc-cache -f -v
 # rm -rf "$TEMP_DIR"
+
+######################
+# Installing gtk-adw theme
+######################
+TEMP_DIR=$(mktemp -d)
+cd $TEMP_DIR
+wget https://github.com/lassekongo83/adw-gtk3/releases/download/v6.4/adw-gtk3v6.4.tar.xz
+tar xvf adw-gtk3v6.4.tar.xz 
+mkdir -p ~/.local/share/themes
+mv adw-gtk3 adw-gtk3-dark ~/.local/share/themes/
+cd $TOOLSDIR
+rm -rf "$TEMP_DIR"
+sudo flatpak override --filesystem=xdg-data/themes
+sudo flatpak mask org.gtk.Gtk3theme.adw-gtk3
+sudo flatpak mask org.gtk.Gtk3theme.adw-gtk3-dark
+
+gsettings set org.gnome.desktop.interface gtk-theme 'adw-gtk3' 
+gsettings set org.gnome.desktop.interface color-scheme 'default'
+sudo gtk-update-icon-cache /usr/share/icons/Papirus
+gsettings set org.gnome.desktop.interface icon-theme "Papirus"
 
 ######################
 # adding user to correct groups
