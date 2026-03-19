@@ -33,7 +33,7 @@ PACKAGES=" $PACKAGES adwaita-fonts freefont-ttf font-inter font-awesome font-awe
 PACKAGES=" $PACKAGES intel-ucode btop ncdu chrony tlp"                    # other tweaks
 PACKAGES=" $PACKAGES socklog-void"                                        # log daemon
 PACKAGES=" $PACKAGES blueman libspa-bluetooth"                            # bluetooth utils
-PACKAGES=" $PACKAGES tar wget unzip vpm"                                  # other utils
+PACKAGES=" $PACKAGES tar wget unzip vpm xz"                               # other utils
 
 ######################
 # Making sure the user running has root privileges
