@@ -26,7 +26,7 @@ PACKAGES=" $PACKAGES grim slurp swaybg"                                   # scre
 PACKAGES=" $PACKAGES adwaita-icon-theme papirus-icon-theme"               # icon package
 PACKAGES=" $PACKAGES tuigreet greetd"                                     # login manager
 PACKAGES=" $PACKAGES mesa-dri mesa-intel-dri intel-video-accel"           # video drivers
-PACKAGES=" $PACKAGES kitty foot Thunar thunar-archive-plugin tumbler galculator eom"  # terminal, file manager, flatpak calculator and image viewer
+PACKAGES=" $PACKAGES kitty foot Thunar thunar-archive-plugin thunar-volman xarchiver tumbler galculator eom"  # terminal, file manager, flatpak calculator and image viewer
 PACKAGES=" $PACKAGES flatpak xdg-desktop-portal-gtk"                      # flatpak
 PACKAGES=" $PACKAGES nextcloud-client tmux"                               # nextcloud
 PACKAGES=" $PACKAGES adwaita-fonts freefont-ttf font-inter font-awesome font-awesome5 font-awesome6 nerd-fonts noto-fonts-emoji" # fonts
@@ -175,9 +175,10 @@ sudo flatpak mask org.gtk.Gtk3theme.adw-gtk3
 sudo flatpak mask org.gtk.Gtk3theme.adw-gtk3-dark
 
 gsettings set org.gnome.desktop.interface gtk-theme 'adw-gtk3' 
-gsettings set org.gnome.desktop.interface color-scheme 'default'
-sudo gtk-update-icon-cache /usr/share/icons/Papirus
-gsettings set org.gnome.desktop.interface icon-theme "Papirus"
+gsettings set org.gnome.desktop.interface color-scheme 'prefer-light'
+gsettings set org.gnome.desktop.interface font-name 'Inter 12'
+sudo gtk-update-icon-cache /usr/share/icons/Papirus-Light
+gsettings set org.gnome.desktop.interface icon-theme "Papirus-Light"
 
 ######################
 # adding user to correct groups
